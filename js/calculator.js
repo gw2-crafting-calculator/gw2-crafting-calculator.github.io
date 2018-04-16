@@ -26,12 +26,12 @@ function getRarity (itemName) {
 async function fetchSpidyItemSearch (
     itemName
   , pageNumber = 1) {
-  const urlPrefix = 'http://www.gw2spidy.com/api/v0.9/json/item-search/'
+  const urlPrefix = 'https://www.gw2spidy.com/api/v0.9/json/item-search/'
   return await (await fetch(urlPrefix + itemName + '/' + pageNumber)).json()
 }
 
 async function fetchSpidyItemData (dataId) {
-  const urlPrefix = 'http://www.gw2spidy.com/api/v0.9/json/item/'
+  const urlPrefix = 'https://www.gw2spidy.com/api/v0.9/json/item/'
   return await (await fetch(urlPrefix + dataId)).json()
 }
 
