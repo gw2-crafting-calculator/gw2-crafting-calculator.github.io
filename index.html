@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Guild Wars 2 Crafting Calculator</title>
+    <meta charset="utf-8"> 
+    <script type="text/javascript" src="js/calculator.js"></script>
+  </head>
+  <body>
+    <div>
+      <span>Item name: </span>
+      <input id="itemName" type="text" value="">
+      <button id="buttonCompute" onclick="compute()">Compute</button>
+    </div>
+    <div>
+      <span id="itemDetails">Product details</span>
+      <br>
+      <table border="1" style="display: inline-block;">
+        <tr>
+          <th>Product base name</th>
+          <th>Rarity ID</th>
+          <th>Product item ID</th>
+        </tr>
+        <tr>
+          <td id="productBaseName"></td>
+          <td id="rarityId"></td>
+          <td id="productId"></td>
+        </tr>
+      </table>
+      <table id="partTbl" border="1" style="display: inline-block;">
+        <tr>
+          <th>Parts item ID</th>
+          <th>Quantity</th>
+        </tr>
+      </table>
+      <table id="profitTbl" border="1" style="display: inline-block;">
+          <tr>
+            <th>Number of craft</th>
+            <th>Profit</th>
+          </tr>
+          <tr>
+            <td id="numCraft"></td>
+            <td id="profit"></td>
+          </tr>
+        </table>
+      <span id="debug"></span>
+    </div>
+    <div id="listing" style="display: table-cell; vertical-align: middle;">
+      <span id="itemDetails">Buy listings</span>
+      <br>
+      <table id="buyOrders" border="1" style="display: inline-block;">
+        <tr>
+          <th>Price</th>
+          <th>Quantity</th>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html> 
