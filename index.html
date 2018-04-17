@@ -14,16 +14,16 @@
     <div>
       <span id="itemDetails">Product details</span>
       <br>
-      <table border="1" style="display: inline-block;">
+      <table id="profitTbl" border="1" style="display: inline-block;">
         <tr>
-          <th>Product base name</th>
-          <th>Rarity ID</th>
-          <th>Product item ID</th>
+          <th>Product name</th>
+          <th>Amount to craft</th>
+          <th>Profit</th>
         </tr>
         <tr>
-          <td id="productBaseName"></td>
-          <td id="rarityId"></td>
-          <td id="productId"></td>
+          <td id="productName"></td>
+          <td id="numCraft"></td>
+          <td id="profit"></td>
         </tr>
       </table>
       <table id="partTbl" border="1" style="display: inline-block;">
@@ -32,17 +32,6 @@
           <th>Quantity</th>
         </tr>
       </table>
-      <table id="profitTbl" border="1" style="display: inline-block;">
-          <tr>
-            <th>Number of craft</th>
-            <th>Profit</th>
-          </tr>
-          <tr>
-            <td id="numCraft"></td>
-            <td id="profit"></td>
-          </tr>
-        </table>
-      <span id="debug"></span>
     </div>
     <div id="listing" style="display: table-cell; vertical-align: middle;">
       <span id="itemDetails">Buy listings</span>
