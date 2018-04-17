@@ -1,14 +1,15 @@
 window.onload = function () {
-  document.getElementById('itemName').value = 'Rabid Beaded Spike (Rare) '
+  document.getElementById('itemName').value = ''
 
   // Execute a function when the user releases a key on the keyboard
-  document.getElementById("itemName")
-    .addEventListener("keyup", (event) => {
-      event.preventDefault()  // Cancel the default action, if needed
+  document.getElementById('itemName')
+    .addEventListener('keyup', (event) => {
+      // Cancel the default action, if needed
+      event.preventDefault()
       // Number 13 is the "Enter" key on the keyboard
       if (event.keyCode === 13) {
         // Trigger the button element with a click
-        document.getElementById("buttonCompute").click()
+        document.getElementById('buttonCompute').click()
       }
     })
 }
