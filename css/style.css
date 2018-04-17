@@ -1,0 +1,6 @@
+.listing thead tr th,
+.listing tr td {
+  height: 10px !important;
+  padding-top: 0;
+  padding-bottom: 0;
+}

@@ -1,5 +1,16 @@
 window.onload = function () {
-  document.getElementById('itemName').value = ''
+  document.getElementById('itemName').value = 'Rabid Beaded Spike (Rare) '
+
+  // Execute a function when the user releases a key on the keyboard
+  document.getElementById("itemName")
+    .addEventListener("keyup", (event) => {
+      event.preventDefault()  // Cancel the default action, if needed
+      // Number 13 is the "Enter" key on the keyboard
+      if (event.keyCode === 13) {
+        // Trigger the button element with a click
+        document.getElementById("buttonCompute").click()
+      }
+    })
 }
 
 class Product {
@@ -22,7 +33,12 @@ class Product {
 
   printPartList () {
     let partTable = document.getElementById('partTbl')
-      .getElementsByTagName('tbody')[0]
+    partTable.innerHTML = ''
+    partTable.innerHTML += '<thead class="thead-light"></thead>'
+    let header = partTable.createTHead()
+    let row = header.insertRow(0)
+    row.insertCell(0).outerHTML = '<th style="width: 60%">Parts item ID</th>'
+    row.insertCell(1).outerHTML = '<th style="width: 40%">Quantity</th>'
     for (const part of this.parts) {
       let row = partTable.insertRow(-1)
       row.insertCell(0).innerHTML = part.item_id
@@ -188,22 +204,29 @@ async function getSellPriceList (part) {
   return sellList
 }
 
-function printBuyOrders (buyList) {
+function printListings (
+  buyList,
+  fullSellList) {
+  let listingDiv = document.getElementById('listing')
+  // Clear previous tables
+  listingDiv.innerHTML = ''
+  const colWidth = Math.round(9 / (1 + fullSellList.length))
+  listingDiv.innerHTML += '<div class="col-' + colWidth + '"><span>Product</span><table id="buyOrders" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
   let buyOrdersTable = document.getElementById('buyOrders')
-    .getElementsByTagName('tbody')[0]
+  let header = buyOrdersTable.createTHead()
+  let row = header.insertRow(0)
+  row.insertCell(0).outerHTML = '<th>Price</th>'
+  row.insertCell(1).outerHTML = '<th>Quantity</th>'
   for (const listing of buyList) {
     let row = buyOrdersTable.insertRow(-1)
     row.insertCell(0).innerHTML = listing.price
     row.insertCell(1).innerHTML = listing.qty
   }
-}
-
-function printSellOrders (fullSellList) {
-  let listingDiv = document.getElementById('listing')
   for (const iList in fullSellList) {
-    listingDiv.innerHTML += '<table id="sellOrders' + iList + '" border="1" style="display: inline-block;"></table>'
+    listingDiv.innerHTML += '<div class="col-' + colWidth + '"><span>Part ' + (parseInt(iList) + 1) + '</span><table id="sellOrders' + iList + '" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
     let sellOrderTable = document.getElementById('sellOrders' + iList)
-    let row = sellOrderTable.insertRow(-1)
+    let header = sellOrderTable.createTHead()
+    let row = header.insertRow(-1)
     row.insertCell(0).outerHTML = '<th>Price</th>'
     row.insertCell(1).outerHTML = '<th>Quantity</th>'
     for (const listing of fullSellList[iList]) {
@@ -227,7 +250,6 @@ async function compute () {
   }
   // Remove trailing whitespaces
   item.value = cleanName(item.value)
-  document.getElementById('productName').innerHTML = item.value
 
   let product = new Product(item.value)
   product.id = await getItemId(product)
@@ -239,7 +261,6 @@ async function compute () {
   product.printPartList()
 
   const buyList = await getBuyPriceList(product)
-  printBuyOrders(buyList)
 
   // Trim buy list to contain exactly maxCraft buy orders
   const expandedBuyList = []
@@ -260,9 +281,9 @@ async function compute () {
         fullSellList.push(sellList)
       })
   }
-  printSellOrders(fullSellList)
+  printListings(buyList, fullSellList)
 
   const result = product.computeMaxCraft(expandedBuyList, fullSellList)
   document.getElementById('numCraft').innerHTML = result.numCraft
-  document.getElementById('profit').innerHTML = result.profit
+  document.getElementById('profit').innerHTML = Math.round(result.profit)
 }

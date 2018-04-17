@@ -1,47 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>Guild Wars 2 Crafting Calculator</title>
     <meta charset="utf-8"> 
     <script type="text/javascript" src="js/calculator.js"></script>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <div>
-      <span>Item name: </span>
-      <input id="itemName" type="text" value="">
-      <button id="buttonCompute" onclick="compute()">Compute</button>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-3">
+          <div class="input-group">
+              <input id="itemName" type="text" class="form-control m-1" placeholder="Item name">
+              <span class="input-group-btn">
+                <button id="buttonCompute" type="button" class="btn btn-primary my-1" onclick="compute()">Compute</button>
+              </span>
+          </div>
+          <table id="profitTbl" class="table m-1">
+            <thead class="thead-light">
+              <tr>
+                <th style="width: 60%">Amount to craft</th>
+                <th style="width: 40%">Profit</th>
+              </tr>
+            </thead>
+            <tr>
+              <td id="numCraft"></td>
+              <td id="profit"></td>
+            </tr>
+          </table>
+          <table id="partTbl" class="table m-1">
+          </table>
+        </div>
+        <div class="col-9">
+          <div id="listing" class="row">
+          </div>
+        </div>
+      </div>
     </div>
-    <div>
-      <span id="itemDetails">Product details</span>
-      <br>
-      <table id="profitTbl" border="1" style="display: inline-block;">
-        <tr>
-          <th>Product name</th>
-          <th>Amount to craft</th>
-          <th>Profit</th>
-        </tr>
-        <tr>
-          <td id="productName"></td>
-          <td id="numCraft"></td>
-          <td id="profit"></td>
-        </tr>
-      </table>
-      <table id="partTbl" border="1" style="display: inline-block;">
-        <tr>
-          <th>Parts item ID</th>
-          <th>Quantity</th>
-        </tr>
-      </table>
-    </div>
-    <div id="listing" style="display: table-cell; vertical-align: middle;">
-      <span id="itemDetails">Buy listings</span>
-      <br>
-      <table id="buyOrders" border="1" style="display: inline-block;">
-        <tr>
-          <th>Price</th>
-          <th>Quantity</th>
-        </tr>
-      </table>
-    </div>
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- jQuery local fallback -->
+    <script>window.jQuery || document.write('<script src="js/jquery-3.3.1.min.js"><\/script>')</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS CDN -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS local fallback -->
+    <script>if (typeof($.fn.modal) === 'undefined') { document.write('<script src="js/bootstrap.min.js"><\/script>') }</script>
+    <!-- Bootstrap CSS local fallback -->
+    <div id="bootstrapCssTest" class="hidden"></div>
+    <script>
+      $(function() {
+        if ($('#bootstrapCssTest').is(':visible')) {
+          $("head").prepend('<link rel="stylesheet" href="css/bootstrap.min.css">');
+        }
+      });
+    </script>
   </body>
 </html> 
