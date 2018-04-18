@@ -52,6 +52,8 @@ class Product {
 
   computeMaxCraft (expandedBuyList, fullSellList) {
     let result = { numCraft: 0, profit: 0 }
+    const cumulativeCraft = [0]
+    const cumulativeProfit = [0]
     // Iterate through buy orders
     for (const buyPrice of expandedBuyList) {
       let cost = 0
@@ -70,13 +72,30 @@ class Product {
       })
       const currProfit = buyPrice * 0.85 - cost
       if (currProfit > 0) {
-        result.profit += currProfit
         ++result.numCraft
+        result.profit += currProfit
+        cumulativeCraft.push(result.numCraft)
+        cumulativeProfit.push(result.profit)
       } else {
         break
       }
     }
+    this.plotProfit(cumulativeCraft, cumulativeProfit)
     return result
+  }
+
+  plotProfit (
+    cumulativeCraft,
+    cumulativeProfit) {
+    let tester = document.getElementById('plot')
+    tester.innerHTML = ''
+
+    Plotly.newPlot(tester, [{
+      x: cumulativeCraft,
+      y: cumulativeProfit
+    }], {
+      margin: { t: 50 }
+    })
   }
 
   get parts () {
@@ -214,9 +233,7 @@ function printListings (
   fullSellList) {
   let listingDiv = document.getElementById('listing')
   // Clear previous tables
-  listingDiv.innerHTML = ''
-  const colWidth = Math.round(9 / (1 + fullSellList.length))
-  listingDiv.innerHTML += '<div class="col-' + colWidth + '"><h5>Product</h5><table id="buyOrders" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
+  listingDiv.innerHTML = '<div class="col-2"><h5>Product</h5><table id="buyOrders" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
   let buyOrdersTable = document.getElementById('buyOrders')
   let header = buyOrdersTable.createTHead()
   let row = header.insertRow(0)
@@ -228,7 +245,7 @@ function printListings (
     row.insertCell(1).innerHTML = listing.qty
   }
   for (const iList in fullSellList) {
-    listingDiv.innerHTML += '<div class="col-' + colWidth + '"><h5>Part ' + (parseInt(iList) + 1) + '</h5><table id="sellOrders' + iList + '" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
+    listingDiv.innerHTML += '<div class="col-2"><h5>Part ' + (parseInt(iList) + 1) + '</h5><table id="sellOrders' + iList + '" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
     let sellOrderTable = document.getElementById('sellOrders' + iList)
     let header = sellOrderTable.createTHead()
     let row = header.insertRow(-1)
@@ -245,19 +262,19 @@ function printListings (
 function prettifyPrice (price) {
   let prettyPrice = ''
   if (price >= 10000) {
-    prettyPrice += Math.round(price / 10000) + '<img src="img/gold_coin.png">'
+    prettyPrice += Math.floor(price / 10000) + '<img src="img/gold_coin.png">'
     price = price % 10000
   }
   if (price >= 100) {
-    prettyPrice += Math.round(price / 100) + '<img src="img/silver_coin.png">'
+    prettyPrice += Math.floor(price / 100) + '<img src="img/silver_coin.png">'
     price = price % 100
   }
-  prettyPrice += Math.round(price) + '<img src="img/copper_coin.png">'
+  prettyPrice += Math.floor(price) + '<img src="img/copper_coin.png">'
   return prettyPrice
 }
 
 function cleanName (itemName) {
-  const expr = /[\w\s()']*[^ \t]+/g
+  const expr = /[\w\s()'-]*[^ \t]+/g
   return expr.exec(itemName)[0]
 }
 

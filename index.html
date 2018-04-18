@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <title>Guild Wars 2 Crafting Calculator</title>
-    <meta charset="utf-8"> 
+    <meta charset="utf-8">
     <script type="text/javascript" src="js/calculator.js"></script>
     <!-- Bootstrap CSS CDN -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
@@ -30,12 +30,11 @@
               <td id="profit"></td>
             </tr>
           </table>
-          <table id="partTbl" class="table m-1">
-          </table>
+          <table id="partTbl" class="table m-1"></table>
         </div>
         <div class="col-9">
-          <div id="listing" class="row">
-          </div>
+          <div id="plot" class="row"></div>
+          <div id="listing" class="row"></div>
         </div>
       </div>
     </div>
@@ -57,5 +56,8 @@
         }
       });
     </script>
+    <!-- plotly.js CDN -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script>if (typeof(Plotly) === 'undefined') { document.write('<script src="js/plotly-latest.min.js"><\/script>') }</script>
   </body>
 </html> 
