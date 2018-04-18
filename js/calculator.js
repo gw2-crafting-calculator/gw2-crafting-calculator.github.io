@@ -19,8 +19,8 @@ class Product {
     if (nameWithRarity.slice(-1) === ')') {
       const expr = /\(([^)]+)\)/g
       const rarity = expr.exec(nameWithRarity)[1]
-      const rarityDict = { Fine: 2, Masterwork: 3, Rare: 4, Exotic: 5 }
-      this.rarity = rarityDict[rarity]
+      const rarityVal = { Basic: 1, Fine: 2, Masterwork: 3, Rare: 4, Exotic: 5 }
+      this.rarity = rarityVal[rarity]
     } else {
       this.rarity = -1
     }
@@ -38,12 +38,15 @@ class Product {
     partTable.innerHTML += '<thead class="thead-light"></thead>'
     let header = partTable.createTHead()
     let row = header.insertRow(0)
-    row.insertCell(0).outerHTML = '<th style="width: 60%">Parts item ID</th>'
-    row.insertCell(1).outerHTML = '<th style="width: 40%">Quantity</th>'
+    row.insertCell(0).outerHTML = '<th style="width: 60%">Parts name</th>'
+    row.insertCell(1).outerHTML = '<th style="width: 40%">Qty</th>'
     for (const part of this.parts) {
       let row = partTable.insertRow(-1)
-      row.insertCell(0).innerHTML = part.item_id
-      row.insertCell(1).innerHTML = part.count
+      fetchJson(urlPrefix().spidyItemData, part.item_id)
+        .then((data) => {
+          row.insertCell(0).innerHTML = data.result.name
+          row.insertCell(1).innerHTML = part.count
+        })
     }
   }
 
@@ -70,9 +73,10 @@ class Product {
         result.profit += currProfit
         ++result.numCraft
       } else {
-        return result
+        break
       }
     }
+    return result
   }
 
   get parts () {
@@ -212,30 +216,44 @@ function printListings (
   // Clear previous tables
   listingDiv.innerHTML = ''
   const colWidth = Math.round(9 / (1 + fullSellList.length))
-  listingDiv.innerHTML += '<div class="col-' + colWidth + '"><span>Product</span><table id="buyOrders" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
+  listingDiv.innerHTML += '<div class="col-' + colWidth + '"><h5>Product</h5><table id="buyOrders" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
   let buyOrdersTable = document.getElementById('buyOrders')
   let header = buyOrdersTable.createTHead()
   let row = header.insertRow(0)
-  row.insertCell(0).outerHTML = '<th>Price</th>'
-  row.insertCell(1).outerHTML = '<th>Quantity</th>'
+  row.insertCell(0).outerHTML = '<th style="width: 70%">Price</th>'
+  row.insertCell(1).outerHTML = '<th style="width: 30%">Qty</th>'
   for (const listing of buyList) {
     let row = buyOrdersTable.insertRow(-1)
-    row.insertCell(0).innerHTML = listing.price
+    row.insertCell(0).innerHTML = prettifyPrice(listing.price)
     row.insertCell(1).innerHTML = listing.qty
   }
   for (const iList in fullSellList) {
-    listingDiv.innerHTML += '<div class="col-' + colWidth + '"><span>Part ' + (parseInt(iList) + 1) + '</span><table id="sellOrders' + iList + '" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
+    listingDiv.innerHTML += '<div class="col-' + colWidth + '"><h5>Part ' + (parseInt(iList) + 1) + '</h5><table id="sellOrders' + iList + '" class="table listing m-1"><thead class="thead-light"></thead></table></div>'
     let sellOrderTable = document.getElementById('sellOrders' + iList)
     let header = sellOrderTable.createTHead()
     let row = header.insertRow(-1)
-    row.insertCell(0).outerHTML = '<th>Price</th>'
-    row.insertCell(1).outerHTML = '<th>Quantity</th>'
+    row.insertCell(0).outerHTML = '<th style="width: 70%">Price</th>'
+    row.insertCell(1).outerHTML = '<th style="width: 30%">Qty</th>'
     for (const listing of fullSellList[iList]) {
       let row = sellOrderTable.insertRow(-1)
-      row.insertCell(0).innerHTML = listing.price
+      row.insertCell(0).innerHTML = prettifyPrice(listing.price)
       row.insertCell(1).innerHTML = listing.qty
     }
   }
+}
+
+function prettifyPrice (price) {
+  let prettyPrice = ''
+  if (price >= 10000) {
+    prettyPrice += Math.round(price / 10000) + '<img src="img/gold_coin.png">'
+    price = price % 10000
+  }
+  if (price >= 100) {
+    prettyPrice += Math.round(price / 100) + '<img src="img/silver_coin.png">'
+    price = price % 100
+  }
+  prettyPrice += Math.round(price) + '<img src="img/copper_coin.png">'
+  return prettyPrice
 }
 
 function cleanName (itemName) {
@@ -286,5 +304,5 @@ async function compute () {
 
   const result = product.computeMaxCraft(expandedBuyList, fullSellList)
   document.getElementById('numCraft').innerHTML = result.numCraft
-  document.getElementById('profit').innerHTML = Math.round(result.profit)
+  document.getElementById('profit').innerHTML = prettifyPrice(result.profit)
 }
