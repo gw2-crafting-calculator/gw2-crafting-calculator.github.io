@@ -30,6 +30,7 @@ class Product {
     this.id = null
     this._parts = null
     this._iPart = null
+    this.plot = null
   }
 
   printPartList () {
@@ -52,8 +53,7 @@ class Product {
 
   computeMaxCraft (expandedBuyList, fullSellList) {
     let result = { numCraft: 0, profit: 0 }
-    const cumulativeCraft = [0]
-    const cumulativeProfit = [0]
+    const plotData = [[0, 0]]
     // Iterate through buy orders
     for (const buyPrice of expandedBuyList) {
       let cost = 0
@@ -74,27 +74,65 @@ class Product {
       if (currProfit > 0) {
         ++result.numCraft
         result.profit += currProfit
-        cumulativeCraft.push(result.numCraft)
-        cumulativeProfit.push(result.profit)
+        plotData.push([result.numCraft, result.profit])
       } else {
         break
       }
     }
-    this.plotProfit(cumulativeCraft, cumulativeProfit)
+    this.plotProfit(plotData)
     return result
   }
 
-  plotProfit (
-    cumulativeCraft,
-    cumulativeProfit) {
-    let tester = document.getElementById('plot')
-    tester.innerHTML = ''
+  plotProfit (plotData) {
+    const $ = window.$
+    document.getElementById('chartDiv').innerHTML = ''
+    $(document).ready(function () {
+      $.jqplot('chartDiv', [plotData], {
+        title: 'Cumulative profit against number of crafts',
+        axes: {
+          xaxis: {
+            drawMajorGridlines: false,
+            label: 'Number of craft',
+            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+            min: 0,
+            max: plotData[plotData.length - 1][0] + 1,
+            tickInterval: 1,
+            tickOptions: {
+              showMinorTicks: false
+            },
+            tickRenderer: $.jqplot.AxisTickRenderer
 
-    Plotly.newPlot(tester, [{
-      x: cumulativeCraft,
-      y: cumulativeProfit
-    }], {
-      margin: { t: 50 }
+          },
+          yaxis: {
+            drawMajorGridlines: false,
+            label: 'Cumulative profit',
+            labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+            min: 0,
+            tickOptions: {
+              formatter: (fmt, val) => prettifyPrice(val)
+            },
+            tickRenderer: $.jqplot.AxisTickRenderer
+          }
+        },
+        cursor: {
+          show: false
+        },
+        grid: {
+          drawBorder: false,
+          background: '#FFFFFF',
+          shadow: false
+        },
+        highlighter: {
+          show: true,
+          sizeAdjust: 7.5
+        },
+        seriesDefaults: {
+          markerOptions: {
+            shadowDepth: 0
+          },
+          shadowDepth: 0
+        }
+      })
     })
   }
 
@@ -261,15 +299,19 @@ function printListings (
 
 function prettifyPrice (price) {
   let prettyPrice = ''
+  let hasGold = false
   if (price >= 10000) {
-    prettyPrice += Math.floor(price / 10000) + '<img src="img/gold_coin.png">'
+    prettyPrice += Math.floor(price / 10000) +
+      '&nbsp;<img src="img/gold_coin.png">&nbsp;'
     price = price % 10000
+    hasGold = true
   }
-  if (price >= 100) {
-    prettyPrice += Math.floor(price / 100) + '<img src="img/silver_coin.png">'
+  if (price >= 100 || hasGold) {
+    prettyPrice += Math.floor(price / 100) +
+      '&nbsp;<img src="img/silver_coin.png">&nbsp;'
     price = price % 100
   }
-  prettyPrice += Math.floor(price) + '<img src="img/copper_coin.png">'
+  prettyPrice += Math.floor(price) + '&nbsp;<img src="img/copper_coin.png">'
   return prettyPrice
 }
 
